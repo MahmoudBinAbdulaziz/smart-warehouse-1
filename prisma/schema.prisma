@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id          String       @id @default(cuid())
+  name        String
+  sku         String       @unique
+  barcode     String       @unique
+  criticalQty Int
+  stock       StockEntry[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Location {
+  id        String       @id @default(cuid())
+  name      String
+  qrCode    String       @unique
+  stock     StockEntry[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model StockEntry {
+  id         String   @id @default(cuid())
+  productId  String
+  locationId String
+  qty        Int
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([productId, locationId])
+}
