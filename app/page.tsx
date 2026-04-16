@@ -607,6 +607,7 @@ function AddLocationForm({
   const [name, setName] = useState("");
   const [qrCode, setQrCode] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     if (scannedQr) {
@@ -620,6 +621,7 @@ function AddLocationForm({
     const normalizedQr = qrCode.trim().toUpperCase();
     if (!normalizedName || !normalizedQr) {
       setError("يرجى تعبئة اسم المكان وQR.");
+      setSuccess("");
       return;
     }
 
@@ -628,6 +630,7 @@ function AddLocationForm({
     );
     if (duplicate) {
       setError("المكان أو QR موجود مسبقًا.");
+      setSuccess("");
       return;
     }
 
@@ -636,9 +639,11 @@ function AddLocationForm({
       setName("");
       setQrCode("");
       setError("");
+      setSuccess("تم إضافة المكان بنجاح.");
       onMessage("تم إضافة مكان جديد.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
+      setSuccess("");
       if (message.includes("ALREADY_EXISTS")) {
         setError("هذا الـ QR مستخدم مسبقًا.");
         return;
@@ -654,6 +659,7 @@ function AddLocationForm({
         type="button"
         onClick={() => {
           setError("");
+          setSuccess("");
           onStartScan();
         }}
         className="mb-3 rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700"
@@ -675,6 +681,7 @@ function AddLocationForm({
         </button>
       </form>
       {error ? <p className="mt-2 text-sm text-red-700">{error}</p> : null}
+      {success ? <p className="mt-2 text-sm text-green-700">{success}</p> : null}
     </section>
   );
 }
