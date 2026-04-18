@@ -16,15 +16,24 @@ export function EditLocationModal({ location, onClose, onSave, onClearLocation }
   const [error, setError] = useState("");
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/35 p-4">
-      <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
-        <h3 className="mb-3 text-lg font-semibold">تعديل المكان</h3>
-        <div className="grid gap-3 md:grid-cols-2">
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="اسم المكان" className="rounded-xl border border-slate-200 p-3" />
-          <input value={qrCode} onChange={(e) => setQrCode(e.target.value)} placeholder="QR المكان" className="rounded-xl border border-slate-200 p-3" />
+    <div className="wh-modal" role="dialog" aria-modal="true" aria-labelledby="edit-location-title">
+      <div className="wh-modal-panel max-h-[90vh] overflow-y-auto">
+        <h3 id="edit-location-title" className="mb-1 text-lg font-bold text-slate-900">
+          تعديل المكان
+        </h3>
+        <p className="mb-5 text-sm text-slate-500">تحديث الاسم أو رمز QR</p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="wh-label">اسم المكان</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="اسم المكان" className="wh-input" />
+          </div>
+          <div>
+            <label className="wh-label">QR المكان</label>
+            <input value={qrCode} onChange={(e) => setQrCode(e.target.value)} placeholder="QR المكان" className="wh-input" />
+          </div>
         </div>
-        {error ? <p className="mt-2 text-sm text-red-700">{error}</p> : null}
-        <div className="mt-4 flex flex-wrap gap-2">
+        {error ? <p className="mt-4 rounded-xl border border-rose-200/80 bg-rose-50/95 px-4 py-2 text-sm text-rose-900">{error}</p> : null}
+        <div className="mt-6 flex flex-wrap gap-3">
           <button
             type="button"
             onClick={() => {
@@ -34,14 +43,18 @@ export function EditLocationModal({ location, onClose, onSave, onClearLocation }
               }
               onSave({ ...location, name: name.trim(), qrCode: qrCode.trim().toUpperCase() });
             }}
-            className="rounded-xl bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+            className="wh-btn-primary"
           >
             حفظ
           </button>
-          <button type="button" onClick={() => onClearLocation(location.id)} className="rounded-xl bg-red-700 px-4 py-2 text-white">
+          <button
+            type="button"
+            onClick={() => onClearLocation(location.id)}
+            className="wh-btn border border-rose-200 bg-rose-50 text-rose-900 shadow-sm hover:bg-rose-100"
+          >
             تفريغ المكان
           </button>
-          <button type="button" onClick={onClose} className="rounded-xl border px-4 py-2">
+          <button type="button" onClick={onClose} className="wh-btn-slate">
             إلغاء
           </button>
         </div>

@@ -9,40 +9,49 @@ type Props = {
 
 export function ProductsTab({ summaries, onEditProductId }: Props) {
   return (
-    <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-      <h2 className="mb-3 text-xl font-semibold">كل المنتجات</h2>
-      <table className="w-full overflow-hidden rounded-xl border border-slate-200 text-sm">
-        <thead>
-          <tr className="bg-slate-50 text-right text-slate-600">
-            <th className="border p-2">الاسم</th>
-            <th className="border p-2">SKU</th>
-            <th className="border p-2">Barcode</th>
-            <th className="border p-2">الكمية</th>
-            <th className="border p-2">الحالة</th>
-            <th className="border p-2">إجراءات</th>
-          </tr>
-        </thead>
-        <tbody>
-          {summaries.map((p) => (
-            <tr key={p.id}>
-              <td className="border p-2">{p.name}</td>
-              <td className="border p-2">{p.sku}</td>
-              <td className="border p-2">{p.barcode}</td>
-              <td className="border p-2">{p.totalQty}</td>
-              <td className="border p-2">{p.status === "critical" ? "حرج" : "طبيعي"}</td>
-              <td className="border p-2">
-                <button
-                  type="button"
-                  onClick={() => onEditProductId(p.id)}
-                  className="rounded-lg bg-indigo-600 px-3 py-1 text-white hover:bg-indigo-700"
-                >
-                  تعديل
-                </button>
-              </td>
+    <section className="wh-card p-6 md:p-7">
+      <div className="mb-6 flex flex-col gap-1 border-b border-slate-100 pb-4">
+        <h2 className="text-xl font-bold text-slate-900">كل المنتجات</h2>
+        <p className="text-sm text-slate-500">عرض شامل مع الحالة والكمية الإجمالية</p>
+      </div>
+      <div className="wh-table-wrap overflow-x-auto">
+        <table className="wh-table min-w-[640px]">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>SKU</th>
+              <th>Barcode</th>
+              <th>الكمية</th>
+              <th>الحالة</th>
+              <th className="w-28">إجراءات</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {summaries.map((p) => (
+              <tr key={p.id}>
+                <td className="font-medium text-slate-900">{p.name}</td>
+                <td className="font-mono text-xs text-slate-600">{p.sku}</td>
+                <td className="font-mono text-xs text-slate-600">{p.barcode}</td>
+                <td className="tabular-nums font-semibold text-violet-700">{p.totalQty}</td>
+                <td>
+                  <span
+                    className={`wh-badge ${
+                      p.status === "critical" ? "bg-rose-100 text-rose-800 ring-1 ring-rose-200/70" : "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200/70"
+                    }`}
+                  >
+                    {p.status === "critical" ? "حرج" : "طبيعي"}
+                  </span>
+                </td>
+                <td>
+                  <button type="button" onClick={() => onEditProductId(p.id)} className="wh-btn-primary !px-4 !py-2 text-xs">
+                    تعديل
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }

@@ -32,45 +32,61 @@ export function DashboardTab({
   onNextPage
 }: Props) {
   return (
-    <section className="space-y-4 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
-      <div className="grid gap-3 md:grid-cols-[1fr_auto]">
-        <input
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="ابحث بـ SKU أو Barcode أو اسم المنتج"
-          className="rounded-xl border border-slate-200 bg-slate-50/60 p-3 outline-none transition focus:border-indigo-300 focus:bg-white"
-        />
-        <button
-          type="button"
-          onClick={onStartSearchScan}
-          className="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700"
-        >
-          سكان بالكاميرا للبحث
+    <section className="wh-card space-y-5 p-6 md:p-7">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end">
+        <div className="min-w-0 flex-1">
+          <label className="wh-label">بحث سريع</label>
+          <input
+            value={search}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="SKU أو Barcode أو اسم المنتج…"
+            className="wh-input"
+          />
+        </div>
+        <button type="button" onClick={onStartSearchScan} className="wh-btn-primary shrink-0 md:min-w-[200px]">
+          سكان بالكاميرا
         </button>
       </div>
 
-      {scanMessage ? <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{scanMessage}</p> : null}
-      {showScanner ? <ScannerView title="الكاميرا تعمل الآن - ضع الباركود داخل الإطار" onStop={onStopScan} /> : null}
+      {scanMessage ? (
+        <p className="rounded-xl border border-emerald-100 bg-emerald-50/90 px-4 py-3 text-sm font-medium text-emerald-900">{scanMessage}</p>
+      ) : null}
+      {showScanner ? <ScannerView title="وجّه الكاميرا نحو الباركود" onStop={onStopScan} /> : null}
 
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         {paginated.map((item) => (
-          <article key={item.id} className="rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">{item.name}</h2>
+          <article
+            key={item.id}
+            className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-white to-slate-50/90 p-5 shadow-sm ring-1 ring-slate-100/80 transition hover:shadow-md"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="text-lg font-bold text-slate-900">{item.name}</h2>
               <span
-                className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                  item.status === "critical" ? "bg-rose-100 text-rose-700" : "bg-emerald-100 text-emerald-700"
+                className={`wh-badge shrink-0 ${
+                  item.status === "critical"
+                    ? "bg-rose-100 text-rose-800 ring-1 ring-rose-200/60"
+                    : "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200/60"
                 }`}
               >
                 {item.status === "critical" ? "حرج" : "طبيعي"}
               </span>
             </div>
-            <p className="mt-2 text-sm text-slate-600">
-              SKU: {item.sku} | Barcode: {item.barcode} | الكمية الإجمالية: {item.totalQty}
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              <span className="font-medium text-slate-700">SKU</span> {item.sku}
+              <span className="mx-2 text-slate-300">·</span>
+              <span className="font-medium text-slate-700">Barcode</span> {item.barcode}
+              <span className="mx-2 text-slate-300">·</span>
+              <span className="font-medium text-slate-700">الإجمالي</span> {item.totalQty}
             </p>
-            <ul className="mt-3 space-y-1 text-sm text-slate-700">
+            <ul className="mt-4 space-y-2 border-t border-slate-100 pt-4 text-sm text-slate-700">
               {item.locations.map((loc) => (
-                <li key={`${item.id}-${loc.locationName}`}>- {loc.locationName}: {loc.qty}</li>
+                <li
+                  key={`${item.id}-${loc.locationName}`}
+                  className="flex items-center justify-between rounded-lg bg-slate-50/80 px-3 py-2 ring-1 ring-slate-100/80"
+                >
+                  <span className="text-slate-600">{loc.locationName}</span>
+                  <span className="font-semibold tabular-nums text-violet-700">{loc.qty}</span>
+                </li>
               ))}
             </ul>
           </article>

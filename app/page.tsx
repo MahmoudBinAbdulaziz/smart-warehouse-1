@@ -426,31 +426,38 @@ export default function HomePage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-7xl p-4 md:p-6">
-      <section className="mb-6 rounded-3xl border border-slate-200/80 bg-gradient-to-l from-slate-50 via-indigo-50 to-sky-50 p-6 text-slate-800 shadow-sm">
-        <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-slate-900">نظام إدارة مستودع ذكي</h1>
-        <p className="text-slate-600">واجهة منظمة لإدارة المنتجات والمواقع مع سكان كاميرا وتحديث مباشر لقاعدة البيانات.</p>
-        <div className="mt-5 grid gap-3 md:grid-cols-3">
-          <StatCard label="عدد المنتجات" value={totalProducts} />
-          <StatCard label="عدد المواقع" value={totalLocations} />
-          <StatCard label="منتجات حرجة" value={criticalCount} danger />
+    <main className="mx-auto min-h-screen max-w-7xl px-4 py-6 pb-16 md:px-6 md:py-10">
+      <section className="relative mb-8 overflow-hidden rounded-3xl border border-white/90 bg-gradient-to-bl from-white via-violet-50/40 to-teal-50/50 p-6 shadow-soft-lg md:p-8">
+        <div className="pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-violet-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute -right-16 bottom-0 h-56 w-56 rounded-full bg-teal-400/15 blur-3xl" />
+        <div className="relative">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-violet-600/90">Smart Warehouse</p>
+          <h1 className="mb-2 bg-gradient-to-l from-slate-900 via-violet-900 to-slate-800 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent md:text-4xl">
+            نظام إدارة مستودع ذكي
+          </h1>
+          <p className="max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
+            لوحة تحكم عصرية لإدارة المنتجات والمواقع، مع سكان الباركود وتحديث فوري للمخزون.
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            <StatCard label="عدد المنتجات" value={totalProducts} accent="violet" />
+            <StatCard label="عدد المواقع" value={totalLocations} accent="teal" />
+            <StatCard label="منتجات حرجة" value={criticalCount} danger />
+          </div>
         </div>
       </section>
 
-      <div className="mb-6 flex flex-wrap gap-2 rounded-2xl border border-slate-200/80 bg-white/80 p-2 shadow-sm backdrop-blur">
+      <nav className="wh-tabs-shell mb-8" aria-label="أقسام النظام">
         {WAREHOUSE_TABS.map((t) => (
           <button
             key={t.key}
             type="button"
             onClick={() => setTab(t.key)}
-            className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
-              tab === t.key ? "bg-indigo-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
-            }`}
+            className={tab === t.key ? "wh-tab wh-tab-active" : "wh-tab"}
           >
             {t.label}
           </button>
         ))}
-      </div>
+      </nav>
 
       {tab === "dashboard" && (
         <DashboardTab

@@ -2,10 +2,110 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background:
-    radial-gradient(circle at 15% 10%, #eef2ff 0%, transparent 32%),
-    radial-gradient(circle at 90% 0%, #e0f2fe 0%, transparent 30%),
-    #f8fafc;
-  color: #0f172a;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply min-h-screen font-sans antialiased text-slate-800;
+    background-color: #f3f4f8;
+    background-image:
+      radial-gradient(ellipse 100% 80% at 100% 0%, rgba(124, 58, 237, 0.09), transparent 55%),
+      radial-gradient(ellipse 80% 60% at 0% 100%, rgba(20, 184, 166, 0.08), transparent 50%),
+      radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255, 255, 255, 0.9), transparent);
+  }
+}
+
+@layer components {
+  .wh-card {
+    @apply rounded-2xl border border-white/80 bg-white/95 shadow-soft backdrop-blur-sm;
+  }
+
+  .wh-card-muted {
+    @apply rounded-2xl border border-violet-100/80 bg-gradient-to-br from-violet-50/90 via-white to-teal-50/40 shadow-soft;
+  }
+
+  .wh-input {
+    @apply w-full rounded-xl border border-slate-200/90 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-500/15;
+  }
+
+  .wh-label {
+    @apply mb-1.5 block text-sm font-medium text-slate-600;
+  }
+
+  .wh-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .wh-btn-primary {
+    @apply wh-btn bg-gradient-to-l from-violet-600 to-violet-500 text-white shadow-lg shadow-violet-500/25 hover:from-violet-700 hover:to-violet-600 hover:shadow-glow;
+  }
+
+  .wh-btn-teal {
+    @apply wh-btn bg-gradient-to-l from-teal-600 to-teal-500 text-white shadow-lg shadow-teal-500/20 hover:from-teal-700 hover:to-teal-600;
+  }
+
+  .wh-btn-slate {
+    @apply wh-btn border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50;
+  }
+
+  .wh-btn-dark {
+    @apply wh-btn bg-slate-800 text-white shadow-md hover:bg-slate-900;
+  }
+
+  .wh-btn-success {
+    @apply wh-btn bg-gradient-to-l from-emerald-600 to-emerald-500 text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-700 hover:to-emerald-600;
+  }
+
+  .wh-badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
+  }
+
+  .wh-tabs-shell {
+    @apply flex flex-wrap gap-1.5 rounded-2xl border border-white/90 bg-white/70 p-1.5 shadow-soft backdrop-blur-md;
+  }
+
+  .wh-tab {
+    @apply rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-white/80 hover:text-slate-900;
+  }
+
+  .wh-tab-active {
+    @apply bg-gradient-to-l from-violet-600 to-violet-500 text-white shadow-md shadow-violet-500/25;
+  }
+
+  .wh-table-wrap {
+    @apply overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-inner shadow-slate-100/80;
+  }
+
+  .wh-table {
+    @apply w-full border-collapse text-sm;
+  }
+
+  .wh-table thead tr {
+    @apply bg-gradient-to-l from-slate-50 to-violet-50/50 text-right;
+  }
+
+  .wh-table th {
+    @apply border-b border-slate-100 px-4 py-3 font-semibold text-slate-600;
+  }
+
+  .wh-table td {
+    @apply border-b border-slate-50 px-4 py-3 text-slate-700;
+  }
+
+  .wh-table tbody tr {
+    @apply transition-colors hover:bg-violet-50/40;
+  }
+
+  .wh-table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .wh-modal {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm;
+  }
+
+  .wh-modal-panel {
+    @apply w-full max-w-xl rounded-2xl border border-white/80 bg-white p-6 shadow-soft-lg;
+  }
 }

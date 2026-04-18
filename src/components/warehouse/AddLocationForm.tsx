@@ -74,8 +74,12 @@ export function AddLocationForm({
   };
 
   return (
-    <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-      <h2 className="mb-3 text-xl font-semibold">إضافة مكان جديد</h2>
+    <section className="wh-card p-6 md:p-7">
+      <div className="mb-6 border-b border-slate-100 pb-4">
+        <h2 className="text-xl font-bold text-slate-900">إضافة مكان جديد</h2>
+        <p className="mt-1 text-sm text-slate-500">امسح QR أو أدخل البيانات يدويًا</p>
+      </div>
+
       <button
         type="button"
         onClick={() => {
@@ -83,26 +87,39 @@ export function AddLocationForm({
           setSuccess("");
           onStartScan();
         }}
-        className="mb-3 rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700"
+        className="wh-btn-primary mb-5"
       >
         سكان QR للمكان
       </button>
+
       {showScanner ? <ScannerView title="امسح QR المكان الآن" onStop={onStopScan} /> : null}
+
       <form
-        className="grid gap-3 md:grid-cols-2"
+        className="grid gap-4 md:grid-cols-2"
         onSubmit={(e) => {
           e.preventDefault();
           void handleSubmit();
         }}
       >
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="اسم المكان" className="rounded-xl border border-slate-200 bg-slate-50/60 p-3 outline-none focus:border-indigo-300 focus:bg-white" />
-        <input value={qrCode} onChange={(e) => setQrCode(e.target.value)} placeholder="QR المكان" className="rounded-xl border border-slate-200 bg-slate-50/60 p-3 outline-none focus:border-indigo-300 focus:bg-white" />
-        <button type="submit" className="col-span-full rounded-xl bg-indigo-600 p-3 font-semibold text-white hover:bg-indigo-700">
+        <div>
+          <label className="wh-label">اسم المكان</label>
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="اسم المكان" className="wh-input" />
+        </div>
+        <div>
+          <label className="wh-label">QR المكان</label>
+          <input value={qrCode} onChange={(e) => setQrCode(e.target.value)} placeholder="QR المكان" className="wh-input" />
+        </div>
+        <button type="submit" className="wh-btn-teal col-span-full py-3.5">
           إضافة المكان
         </button>
       </form>
-      {error ? <p className="mt-2 text-sm text-red-700">{error}</p> : null}
-      {success ? <p className="mt-2 text-sm text-green-700">{success}</p> : null}
+
+      {error ? (
+        <p className="mt-4 rounded-xl border border-rose-200/80 bg-rose-50/95 px-4 py-3 text-sm font-medium text-rose-900">{error}</p>
+      ) : null}
+      {success ? (
+        <p className="mt-4 rounded-xl border border-emerald-200/80 bg-emerald-50/95 px-4 py-3 text-sm font-medium text-emerald-900">{success}</p>
+      ) : null}
     </section>
   );
 }

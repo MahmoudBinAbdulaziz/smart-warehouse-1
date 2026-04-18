@@ -12,14 +12,24 @@ export function Pagination({
   onNext: () => void;
 }) {
   return (
-    <div className="flex items-center gap-3">
-      <button type="button" onClick={onPrev} className="rounded-lg border border-slate-300 bg-white px-3 py-1 text-slate-700 disabled:opacity-50" disabled={page <= 1}>
+    <div className="flex flex-wrap items-center justify-center gap-3 border-t border-slate-100 pt-5 md:justify-between">
+      <button
+        type="button"
+        onClick={onPrev}
+        className="wh-btn-slate min-w-[100px] py-2.5 disabled:opacity-40"
+        disabled={page <= 1}
+      >
         السابق
       </button>
-      <span className="rounded-lg bg-slate-100 px-3 py-1 text-sm text-slate-600">
+      <span className="rounded-xl bg-slate-100/90 px-4 py-2 text-sm font-medium text-slate-600 ring-1 ring-slate-200/60">
         صفحة {page} من {maxPage}
       </span>
-      <button type="button" onClick={onNext} className="rounded-lg border border-slate-300 bg-white px-3 py-1 text-slate-700 disabled:opacity-50" disabled={page >= maxPage}>
+      <button
+        type="button"
+        onClick={onNext}
+        className="wh-btn-slate min-w-[100px] py-2.5 disabled:opacity-40"
+        disabled={page >= maxPage}
+      >
         التالي
       </button>
     </div>
