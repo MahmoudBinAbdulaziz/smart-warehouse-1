@@ -26,3 +26,9 @@ export type ProductSummary = Product & {
     qty: number;
   }>;
 };
+
+export type WarehouseSnapshot = {
+  products: Product[];
+  locations: Location[];
+  stock: StockEntry[];
+};

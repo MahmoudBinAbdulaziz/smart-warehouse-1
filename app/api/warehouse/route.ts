@@ -23,6 +23,10 @@ type ActionPayload =
   | {
       action: "clearLocationStock";
       payload: { locationId: string };
+    }
+  | {
+      action: "withdrawStock";
+      payload: { productId: string; lines: Array<{ locationId: string; qty: number }> };
     };
 
 export async function GET() {
@@ -123,6 +127,70 @@ export async function POST(req: Request) {
 
     if (body.action === "clearLocationStock") {
       await prisma.stockEntry.deleteMany({ where: { locationId: body.payload.locationId } });
+    }
+
+    if (body.action === "withdrawStock") {
+      const { productId, lines } = body.payload;
+      if (!productId?.trim() || !Array.isArray(lines)) {
+        return NextResponse.json({ error: "INVALID_PAYLOAD", message: "بيانات السحب غير صالحة." }, { status: 400 });
+      }
+
+      const productExists = await prisma.product.findUnique({ where: { id: productId } });
+      if (!productExists) {
+        return NextResponse.json({ error: "PRODUCT_NOT_FOUND", message: "المنتج غير مسجل في النظام." }, { status: 404 });
+      }
+
+      const cleaned = lines
+        .map((l) => ({
+          locationId: String(l.locationId).trim(),
+          qty: Math.floor(Number(l.qty))
+        }))
+        .filter((l) => l.locationId && l.qty > 0);
+
+      if (cleaned.length === 0) {
+        return NextResponse.json({ error: "INVALID_PAYLOAD", message: "حدد كمية أكبر من صفر على الأقل من مكان واحد." }, { status: 400 });
+      }
+
+      try {
+        await prisma.$transaction(async (tx) => {
+          for (const line of cleaned) {
+            const row = await tx.stockEntry.findUnique({
+              where: {
+                productId_locationId: {
+                  productId,
+                  locationId: line.locationId
+                }
+              }
+            });
+            if (!row) {
+              throw new Error("INSUFFICIENT_STOCK");
+            }
+            if (row.qty < line.qty) {
+              throw new Error("INSUFFICIENT_STOCK");
+            }
+            const nextQty = row.qty - line.qty;
+            if (nextQty === 0) {
+              await tx.stockEntry.delete({ where: { id: row.id } });
+            } else {
+              await tx.stockEntry.update({
+                where: { id: row.id },
+                data: { qty: nextQty }
+              });
+            }
+          }
+        });
+      } catch (e) {
+        if (e instanceof Error && e.message === "INSUFFICIENT_STOCK") {
+          return NextResponse.json(
+            {
+              error: "INSUFFICIENT_STOCK",
+              message: "الكمية غير كافية في أحد الأماكن المحددة. راجع التوزيع أو الكميات المتوفرة."
+            },
+            { status: 409 }
+          );
+        }
+        throw e;
+      }
     }
 
     const snapshot = await getWarehouseSnapshot();
