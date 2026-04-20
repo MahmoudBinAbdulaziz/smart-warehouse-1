@@ -57,8 +57,20 @@ if ! grep -q '^AUTH_SECRET=' .env || grep -q '^AUTH_SECRET=change-me' .env; then
 fi
 
 # 3. Rebuild and restart containers.
+echo "==> Stopping previous stack (if any) and removing orphans"
+docker compose down --remove-orphans || true
+
+# Safety net: some previous deploys created containers with fixed names
+# (container_name: smartwarehouse-db / -app / -nginx) that docker compose
+# may not clean up if the compose project name changed. Force-remove them.
+for name in smartwarehouse-db smartwarehouse-app smartwarehouse-nginx; do
+  if docker ps -a --format '{{.Names}}' | grep -q "^${name}$"; then
+    echo "==> Removing leftover container ${name}"
+    docker rm -f "${name}" >/dev/null || true
+  fi
+done
+
 echo "==> Rebuilding containers"
-docker compose down
 docker compose up -d --build
 
 # 4. Wait for the app container to be running.
