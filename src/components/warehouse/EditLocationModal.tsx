@@ -8,9 +8,10 @@ type Props = {
   onClose: () => void;
   onSave: (updated: Location) => void;
   onClearLocation: (locationId: string) => void;
+  canWrite?: boolean;
 };
 
-export function EditLocationModal({ location, onClose, onSave, onClearLocation }: Props) {
+export function EditLocationModal({ location, onClose, onSave, onClearLocation, canWrite = true }: Props) {
   const [name, setName] = useState(location.name);
   const [qrCode, setQrCode] = useState(location.qrCode);
   const [error, setError] = useState("");
@@ -25,11 +26,23 @@ export function EditLocationModal({ location, onClose, onSave, onClearLocation }
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="wh-label">اسم المكان</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="اسم المكان" className="wh-input" />
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="اسم المكان"
+              disabled={!canWrite}
+              className="wh-input disabled:opacity-60"
+            />
           </div>
           <div>
             <label className="wh-label">QR المكان</label>
-            <input value={qrCode} onChange={(e) => setQrCode(e.target.value)} placeholder="QR المكان" className="wh-input" />
+            <input
+              value={qrCode}
+              onChange={(e) => setQrCode(e.target.value)}
+              placeholder="QR المكان"
+              disabled={!canWrite}
+              className="wh-input disabled:opacity-60"
+            />
           </div>
         </div>
         {error ? <p className="mt-4 rounded-xl border border-rose-200/80 bg-rose-50/95 px-4 py-2 text-sm text-rose-900">{error}</p> : null}
@@ -43,14 +56,16 @@ export function EditLocationModal({ location, onClose, onSave, onClearLocation }
               }
               onSave({ ...location, name: name.trim(), qrCode: qrCode.trim().toUpperCase() });
             }}
-            className="wh-btn-primary"
+            disabled={!canWrite}
+            className="wh-btn-primary disabled:opacity-50"
           >
             حفظ
           </button>
           <button
             type="button"
             onClick={() => onClearLocation(location.id)}
-            className="wh-btn border border-rose-200 bg-rose-50 text-rose-900 shadow-sm hover:bg-rose-100"
+            disabled={!canWrite}
+            className="wh-btn border border-rose-200 bg-rose-50 text-rose-900 shadow-sm hover:bg-rose-100 disabled:opacity-50"
           >
             تفريغ المكان
           </button>

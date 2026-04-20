@@ -13,6 +13,7 @@ type Props = {
   onStartScan: () => void;
   showScanner: boolean;
   onStopScan: () => void;
+  canWrite?: boolean;
 };
 
 export function AddLocationForm({
@@ -23,7 +24,8 @@ export function AddLocationForm({
   scannedQrTick,
   onStartScan,
   showScanner,
-  onStopScan
+  onStopScan,
+  canWrite = true
 }: Props) {
   const [name, setName] = useState("");
   const [qrCode, setQrCode] = useState("");
@@ -78,6 +80,9 @@ export function AddLocationForm({
       <div className="mb-6 border-b border-slate-100 pb-4">
         <h2 className="text-xl font-bold text-slate-900">إضافة مكان جديد</h2>
         <p className="mt-1 text-sm text-slate-500">امسح QR أو أدخل البيانات يدويًا</p>
+        {!canWrite ? (
+          <p className="mt-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">عرض فقط — لا يمكن إضافة أماكن.</p>
+        ) : null}
       </div>
 
       <button
@@ -87,7 +92,8 @@ export function AddLocationForm({
           setSuccess("");
           onStartScan();
         }}
-        className="wh-btn-primary mb-5"
+        disabled={!canWrite}
+        className="wh-btn-primary mb-5 disabled:opacity-50"
       >
         سكان QR للمكان
       </button>
@@ -103,13 +109,25 @@ export function AddLocationForm({
       >
         <div>
           <label className="wh-label">اسم المكان</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="اسم المكان" className="wh-input" />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="اسم المكان"
+            disabled={!canWrite}
+            className="wh-input disabled:opacity-60"
+          />
         </div>
         <div>
           <label className="wh-label">QR المكان</label>
-          <input value={qrCode} onChange={(e) => setQrCode(e.target.value)} placeholder="QR المكان" className="wh-input" />
+          <input
+            value={qrCode}
+            onChange={(e) => setQrCode(e.target.value)}
+            placeholder="QR المكان"
+            disabled={!canWrite}
+            className="wh-input disabled:opacity-60"
+          />
         </div>
-        <button type="submit" className="wh-btn-teal col-span-full py-3.5">
+        <button type="submit" disabled={!canWrite} className="wh-btn-teal col-span-full py-3.5 disabled:opacity-50">
           إضافة المكان
         </button>
       </form>

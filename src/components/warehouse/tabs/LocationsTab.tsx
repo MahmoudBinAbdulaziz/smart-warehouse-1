@@ -7,9 +7,10 @@ type Props = {
   stock: StockEntry[];
   products: Product[];
   onEditLocation: (loc: Location) => void;
+  canWrite?: boolean;
 };
 
-export function LocationsTab({ locations, stock, products, onEditLocation }: Props) {
+export function LocationsTab({ locations, stock, products, onEditLocation, canWrite = true }: Props) {
   return (
     <section className="wh-card p-6 md:p-7">
       <div className="mb-6 border-b border-slate-100 pb-4">
@@ -26,13 +27,17 @@ export function LocationsTab({ locations, stock, products, onEditLocation }: Pro
             >
               <div className="mb-3 flex items-start justify-between gap-2">
                 <h3 className="text-lg font-bold text-slate-900">{loc.name}</h3>
-                <button
-                  type="button"
-                  onClick={() => onEditLocation(loc)}
-                  className="wh-btn-slate !px-3 !py-1.5 text-xs font-semibold"
-                >
-                  تعديل
-                </button>
+                {canWrite ? (
+                  <button
+                    type="button"
+                    onClick={() => onEditLocation(loc)}
+                    className="wh-btn-slate !px-3 !py-1.5 text-xs font-semibold"
+                  >
+                    تعديل
+                  </button>
+                ) : (
+                  <span className="text-xs text-slate-400">عرض فقط</span>
+                )}
               </div>
               <p className="mb-4 inline-flex w-fit rounded-full bg-violet-100/90 px-3 py-1 text-xs font-semibold text-violet-800 ring-1 ring-violet-200/60">
                 QR: {loc.qrCode}

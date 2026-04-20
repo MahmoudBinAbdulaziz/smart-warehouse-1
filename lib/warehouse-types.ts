@@ -4,6 +4,8 @@ export type Product = {
   sku: string;
   barcode: string;
   criticalQty: number;
+  expiresAt: string | null;
+  expiryAlertDaysBefore: number;
 };
 
 export type Location = {
@@ -21,6 +23,8 @@ export type StockEntry = {
 export type ProductSummary = Product & {
   totalQty: number;
   status: "critical" | "ok";
+  expiryStatus: "none" | "soon" | "expired";
+  daysToExpiry: number | null;
   locations: Array<{
     locationName: string;
     qty: number;

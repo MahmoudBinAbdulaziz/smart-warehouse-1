@@ -3,6 +3,7 @@
 import type { ProductSummary } from "@/lib/warehouse-types";
 import { Pagination } from "@/components/warehouse/Pagination";
 import { ScannerView } from "@/components/warehouse/ScannerView";
+import { useLocale } from "@/contexts/LocaleContext";
 
 type Props = {
   search: string;
@@ -31,27 +32,28 @@ export function DashboardTab({
   onPrevPage,
   onNextPage
 }: Props) {
+  const { t } = useLocale();
   return (
     <section className="wh-card space-y-5 p-6 md:p-7">
       <div className="flex flex-col gap-4 md:flex-row md:items-end">
         <div className="min-w-0 flex-1">
-          <label className="wh-label">بحث سريع</label>
+          <label className="wh-label">{t("dashboardTab_quick_search")}</label>
           <input
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="SKU أو Barcode أو اسم المنتج…"
+            placeholder={t("dashboardTab_search_placeholder")}
             className="wh-input"
           />
         </div>
         <button type="button" onClick={onStartSearchScan} className="wh-btn-primary shrink-0 md:min-w-[200px]">
-          سكان بالكاميرا
+          {t("dashboardTab_scan_camera")}
         </button>
       </div>
 
       {scanMessage ? (
         <p className="rounded-xl border border-emerald-100 bg-emerald-50/90 px-4 py-3 text-sm font-medium text-emerald-900">{scanMessage}</p>
       ) : null}
-      {showScanner ? <ScannerView title="وجّه الكاميرا نحو الباركود" onStop={onStopScan} /> : null}
+      {showScanner ? <ScannerView title={t("dashboardTab_scanner_title")} onStop={onStopScan} /> : null}
 
       <div className="grid gap-4 md:grid-cols-2">
         {paginated.map((item) => (
@@ -68,15 +70,15 @@ export function DashboardTab({
                     : "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200/60"
                 }`}
               >
-                {item.status === "critical" ? "حرج" : "طبيعي"}
+                {item.status === "critical" ? t("dashboardTab_critical") : t("dashboardTab_ok")}
               </span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">
-              <span className="font-medium text-slate-700">SKU</span> {item.sku}
+              <span className="font-medium text-slate-700">{t("dashboardTab_sku")}</span> {item.sku}
               <span className="mx-2 text-slate-300">·</span>
-              <span className="font-medium text-slate-700">Barcode</span> {item.barcode}
+              <span className="font-medium text-slate-700">{t("dashboardTab_barcode")}</span> {item.barcode}
               <span className="mx-2 text-slate-300">·</span>
-              <span className="font-medium text-slate-700">الإجمالي</span> {item.totalQty}
+              <span className="font-medium text-slate-700">{t("dashboardTab_total")}</span> {item.totalQty}
             </p>
             <ul className="mt-4 space-y-2 border-t border-slate-100 pt-4 text-sm text-slate-700">
               {item.locations.map((loc) => (

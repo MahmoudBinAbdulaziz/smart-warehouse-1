@@ -4,6 +4,10 @@ export type Product = {
   sku: string;
   barcode: string;
   criticalQty: number;
+  /** ISO string أو null إن لم يُحدَّد تاريخ انتهاء */
+  expiresAt: string | null;
+  /** عدد الأيام قبل تاريخ الانتهاء لبدء التنبيه (مثل نافذة الحد الحرج للكمية) */
+  expiryAlertDaysBefore: number;
 };
 
 export type Location = {
@@ -21,6 +25,9 @@ export type StockEntry = {
 export type ProductSummary = Product & {
   totalQty: number;
   status: "critical" | "ok";
+  /** حالة الصلاحية عند وجود تاريخ انتهاء */
+  expiryStatus: "none" | "soon" | "expired";
+  daysToExpiry: number | null;
   locations: Array<{
     locationName: string;
     qty: number;

@@ -1,9 +1,10 @@
 import type { Location, Product, ProductSummary, StockEntry } from "./lib/warehouse-types";
+import { classifyExpiry } from "./src/lib/product-expiry";
 
 export const products: Product[] = [
-  { id: "p1", name: "Laptop Dell 14", sku: "SKU-1001", barcode: "8901001001", criticalQty: 10 },
-  { id: "p2", name: "Mouse Logitech M90", sku: "SKU-1002", barcode: "8901001002", criticalQty: 20 },
-  { id: "p3", name: "Keyboard K120", sku: "SKU-1003", barcode: "8901001003", criticalQty: 12 }
+  { id: "p1", name: "Laptop Dell 14", sku: "SKU-1001", barcode: "8901001001", criticalQty: 10, expiresAt: null, expiryAlertDaysBefore: 30 },
+  { id: "p2", name: "Mouse Logitech M90", sku: "SKU-1002", barcode: "8901001002", criticalQty: 20, expiresAt: null, expiryAlertDaysBefore: 30 },
+  { id: "p3", name: "Keyboard K120", sku: "SKU-1003", barcode: "8901001003", criticalQty: 12, expiresAt: null, expiryAlertDaysBefore: 30 }
 ];
 
 export const locations: Location[] = [
@@ -47,10 +48,15 @@ export function buildProductSummary(): ProductSummary[] {
   return products.map((product) => {
     const entries = stock.filter((entry) => entry.productId === product.id);
     const totalQty = entries.reduce((sum, entry) => sum + entry.qty, 0);
+    const exp = classifyExpiry(product.expiresAt ? new Date(product.expiresAt) : null, product.expiryAlertDaysBefore);
+    const expiryStatus =
+      exp.kind === "expired" ? ("expired" as const) : exp.kind === "soon" ? ("soon" as const) : ("none" as const);
     return {
       ...product,
       totalQty,
       status: totalQty <= product.criticalQty ? "critical" : "ok",
+      expiryStatus,
+      daysToExpiry: exp.daysLeft,
       locations: entries.map((entry) => ({
         locationName: locations.find((loc) => loc.id === entry.locationId)?.name ?? "Unknown",
         qty: entry.qty

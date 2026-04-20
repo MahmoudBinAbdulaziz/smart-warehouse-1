@@ -8,7 +8,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      # High host port avoids clash with local PostgreSQL on 5432/5433
+      - "15432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -29,6 +30,9 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://postgres:postgres@db:5432/smartwarehouse?schema=public
+      AUTH_SECRET: ${AUTH_SECRET:-please-set-auth-secret-at-least-32-characters-long}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme123}
     expose:
       - "3000"
 

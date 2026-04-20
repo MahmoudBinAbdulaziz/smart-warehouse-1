@@ -6,24 +6,111 @@ datasource db {
   provider = "postgresql"
 }
 
+enum SystemRole {
+  ADMIN
+  USER
+}
+
+enum WarehouseRole {
+  VIEWER
+  OPERATOR
+  MANAGER
+}
+
+model User {
+  id           String               @id @default(cuid())
+  email        String               @unique
+  passwordHash String
+  name         String?
+  systemRole   SystemRole           @default(USER)
+  active       Boolean              @default(true)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  memberships  WarehouseMember[]
+  auditLogs    AuditLog[]
+  pageGrants   WarehousePageGrant[]
+}
+
+model Warehouse {
+  id         String               @id @default(cuid())
+  name       String
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  members    WarehouseMember[]
+  products   Product[]
+  locations  Location[]
+  auditLogs  AuditLog[]
+  pageGrants WarehousePageGrant[]
+}
+
+model WarehouseMember {
+  id          String         @id @default(cuid())
+  userId      String
+  warehouseId String
+  role        WarehouseRole  @default(OPERATOR)
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  warehouse   Warehouse      @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([userId, warehouseId])
+}
+
+model WarehousePageGrant {
+  id          String    @id @default(cuid())
+  userId      String
+  warehouseId String
+  pageKey     String
+  allowed     Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, warehouseId, pageKey])
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  warehouseId String
+  userId      String?
+  action      String
+  details     Json?
+  createdAt   DateTime  @default(now())
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([warehouseId, createdAt])
+}
+
 model Product {
-  id          String       @id @default(cuid())
-  name        String
-  sku         String       @unique
-  barcode     String       @unique
-  criticalQty Int
-  stock       StockEntry[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id                      String    @id @default(cuid())
+  warehouseId           String
+  warehouse             Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  name                    String
+  sku                     String
+  barcode                 String
+  criticalQty             Int
+  expiresAt               DateTime?
+  expiryAlertDaysBefore   Int       @default(30)
+  stock                   StockEntry[]
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  @@unique([warehouseId, sku])
+  @@unique([warehouseId, barcode])
 }
 
 model Location {
-  id        String       @id @default(cuid())
-  name      String
-  qrCode    String       @unique
-  stock     StockEntry[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  id          String       @id @default(cuid())
+  warehouseId String
+  warehouse   Warehouse    @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  name        String
+  qrCode      String
+  stock       StockEntry[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([warehouseId, qrCode])
 }
 
 model StockEntry {
